@@ -1,4 +1,4 @@
-/* ================================= 
+/* =================================
   Base Element Styles
 ==================================== */
 
@@ -21,7 +21,7 @@ body {
 }
 
 header {
-	text-align: center;  
+	text-align: center;
 }
 
 h1 {
@@ -34,13 +34,13 @@ a {
   text-decoration: none;
 }
 
-/* ================================= 
+/* =================================
   Form Element Styles
 ==================================== */
 
 form {
 	padding: .875em 1.875em 1.875em;
-	background: #9bdcf8;
+	background: #f56c6c;
 	border: 2px solid rgba(8, 63, 87, 0.7);
 	border-radius: 4px;
 }
@@ -58,7 +58,7 @@ fieldset {
 
 legend,
 button {
-	font-size: 1.25em;	
+	font-size: 1.25em;
 }
 
 legend {
@@ -82,7 +82,7 @@ label {
 
 input,
 select {
-	margin-bottom: 1.125em;	
+	margin-bottom: 1.125em;
 }
 
 input {
@@ -122,13 +122,13 @@ button:hover {
 	border: 2px solid #f4f6f6;
 }
 
-input, 
-select, 
+input,
+select,
 option {
 	font-family: 'roboto', sans-serif;
 }
 
-/* ================================= 
+/* =================================
   Page Styles
 ==================================== */
 
@@ -150,7 +150,7 @@ option {
 	margin-top: 1.25em;
 }
 
-/* ================================= 
+/* =================================
   Helper Classes
 ==================================== */
 
@@ -164,7 +164,7 @@ option {
   clear: both;
 }
 
-/* ================================= 
+/* =================================
   Media Queries
 ==================================== */
 
