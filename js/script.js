@@ -1,8 +1,23 @@
-//pound sign something is looking for the id something
-//<input type="text" id="name" name="user_name">
+/*
+    Treehouse instructions:
+    // Put the first field in the `focus` state
+    // Use jQuery to select the 'Name' input element and place focus on it.
+
+    6/26/2019: YM
+    The name id is placed on a focus state.
+        $("#name").focus();
+        - find the information in the html (<input type="text" id="name" name="user_name">)
+            pound sign something is looking for the id something
+*/
 $("#name").focus();
 
-//<input type="text" id="other-title" name="job_role_other" placeholder="Your Job Role">
+/*
+    Treehouse instructions:
+    6/26/2019: YM
+    Add an “Other” option to the Job Role section
+    <input type="text" id="other-title" name="job_role_other" placeholder="Your Job Role">
+*/
+
 $("#other-title").hide();
 
 //T-SHIRT section starts here
