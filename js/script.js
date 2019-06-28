@@ -1,5 +1,7 @@
 //$(document).ready(function() {
 
+$(document).ready(function () { });
+
 /*Set focus on the name ID
     //pound sign something is looking for the id something
     //<input type="text" id="name" name="user_name">
