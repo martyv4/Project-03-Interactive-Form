@@ -32,8 +32,6 @@
 
     $("#color").find('option:not(:eq(0))').hide();
 
-    //*******hide list ALL BUT FIRST - $('#color option[value != "none"]').hide();
-
     //event listener if show hide update color
     $('#design').on('change', function(){
       //T shirt section extra credit
