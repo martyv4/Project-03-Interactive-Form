@@ -11,7 +11,7 @@
 
     <header>
       <span>Register for</span>
-      <h1>Full Stack Conf</h1>
+      <h1>Full Stack Conf Type</h1>
     </header>
 
     <form action="index.html" method="post">
@@ -167,5 +167,15 @@
   -->
       <script src="js/jquery-3.4.1.min.js"></script>
       <script src="js/script.js"></script>
+
+      <script>
+          $(function(){
+              $('name').on('click', function() {
+                $(this).next().hide();
+
+              })
+
+      });
+      </script>
 </body>
 </html>
