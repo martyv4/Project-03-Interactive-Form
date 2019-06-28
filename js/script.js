@@ -491,6 +491,3 @@ $("#cvv").on("keyup", () => {
   hideInputValidationError("#err-cvv");
   validationCreditCardCVV();
 });
-
-
-Got it, thanks!Awesome, thanks!Thank you!
