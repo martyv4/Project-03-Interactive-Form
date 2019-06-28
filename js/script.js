@@ -1,16 +1,19 @@
-//$(document).ready(function() {
-
+/* Place the document in a ready state to be manipulated safely.
+      https://learn.jquery.com/using-jquery-core/document-ready/
+*/
 $(document).ready(function () { });
 
 /*Set focus on the name ID
-    //pound sign something is looking for the id something
-    //<input type="text" id="name" name="user_name">
-    //https://api.jquery.com/focus/     */
+    - pound sign something is looking for the id something
+        <input type="text" id="name" name="user_name">
+        https://api.jquery.com/focus/
+*/
     $("#name").focus();
 
 /* On the drop down menu Job Role add an other role
-    //add input in index.html adding text to the placeholder
-    //<input type="text" id="other-title" name="job_role_other" placeholder="Your Job Role">  */
+    - Add input in index.html adding text to the placeholder
+      <input type="text" id="other-title" name="job_role_other" placeholder="Your Job Role">
+*/
     $('#other-title').hide();
     $('#title').on('change', (e) => {
            if ($(e.target).val() == 'other') {
