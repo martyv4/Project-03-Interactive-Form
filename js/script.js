@@ -225,7 +225,8 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
     rightTimeStartHr = DetermineTwentyFourHour(rightTimeStartHr, rightStartTime);
     rightTimeEndHr = DetermineTwentyFourHour(rightTimeEndHr, rightEndTime);
 
-    //https://stackoverflow.com/questions/3269434/whats-the-most-efficient-way-to-test-two-integer-ranges-for-overlap
+    //test
+      //https://stackoverflow.com/questions/3269434/whats-the-most-efficient-way-to-test-two-integer-ranges-for-overlap
 
     return (leftTimeStartHr <= rightTimeEndHr) && (rightTimeStartHr <= leftTimeEndHr);
   }
@@ -263,7 +264,7 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
 
   //Display the credit card inputs, hide others
   const reactToPaymentType = (paymentTypeVal) => {
-    //remove validation error: user has now elected a payment type
+    //remove validation error: user has now selected a payment type
     hideInputValidationError("#err-payment");
     if (paymentTypeVal == 'credit card') {
     $ccSection.show();
@@ -296,6 +297,7 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
   reactToPaymentType('credit card');
 
 //VALIDATION
+  //Error messages for validation errors
   const validationAllPageFormElements = () => {
     let retVal = true;
     if (!validationNameInput())
@@ -333,6 +335,7 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
 
   const validationEmailInput = () => {
       hideInputValidationError("#errEmail");
+    //Validate the e-mail field if false then give an error message
       //https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
       const re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
       if (re.test($('#mail').val()))
@@ -345,7 +348,8 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
         return false;
       }
   }
-
+//Form Validation
+  //At least one checkbox in the section Register for Activities must be selected else an error will appear on the form.
   const validationActivitySection = () => {
     hideInputValidationError("#errActivity");
       let gotOne = false;
@@ -370,7 +374,7 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
       return false;
     }
   }
-  //The credit card validation errors
+//Hide all credit card validation errors
   const validationCreditCardInformation = () => {
     hideInputValidationError("#err-cc-num");
     hideInputValidationError("#err-zip");
@@ -406,6 +410,9 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
       return true;
     }
   }
+  //Form validation for Credit Card error message
+    //Regex (https://www.computerhope.com/unix/regex-quickref.htm) (Positional metacharacters (^ = start of string or line, $ = end of string, or end of line
+    //Use the regex to define the text https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
 
   const validationCreditCardNumber = () => {
     const validSizeMin = 13;
@@ -414,7 +421,6 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
     const ccNumberVal = $('#cc-num').val();
     const ccNumberValSize = ccNumberVal.length;
 
-    //Use the regex  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
     const digitRegEx = /^(\d)+$/;
 
     if (ccNumberValSize >= validSizeMin && ccNumberValSize <= validSizeMax && digitRegEx.test(ccNumberVal))
@@ -439,7 +445,9 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
       return false;
     }
   }
-  //zip code must be 5 digits
+
+  //Form validation for Zip Code error message
+    //Regex (https://www.computerhope.com/unix/regex-quickref.htm) //Positional metacharacters (^ = start of string or line, $ = end of string, or end of line
   const validationCreditCardZipCode = () => {
     const validSize = 5;
 
