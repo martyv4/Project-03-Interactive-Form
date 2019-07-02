@@ -1,19 +1,16 @@
-/* Place the document in a ready state to be manipulated safely.
-      https://learn.jquery.com/using-jquery-core/document-ready/
-*/
+/* Place the document in a ready state to be manipulated safely. */
+    // https://learn.jquery.com/using-jquery-core/document-ready/
 $(document).ready(function () { });
 
-/*Set focus on the name ID
-    - pound sign something is looking for the id something
-        <input type="text" id="name" name="user_name">
-        https://api.jquery.com/focus/
-*/
+/* Set focus on the name ID */
+    // pound sign something is looking for the id something
+    // <input type="text" id="name" name="user_name">
+    // https://api.jquery.com/focus/
     $("#name").focus();
 
-/* On the drop down menu Job Role add an other role
-    - Add input in index.html adding text to the placeholder
-      <input type="text" id="other-title" name="job_role_other" placeholder="Your Job Role">
-*/
+/* Add Other option */
+// On the drop down menu Job Role add an other role
+    // Add input in index.html adding text to the placeholder. <input type="text" id="other-title" name="job_role_other" placeholder="Your Job Role">
     $('#other-title').hide();
     $('#title').on('change', (e) => {
            if ($(e.target).val() == 'other') {
@@ -23,23 +20,20 @@ $(document).ready(function () { });
             }
      });
 
- /* T-SHIRT section starts here
-    //Hide the  “Select Theme”  `option` element in the “Design” menu
-    //<select id="design" name="user_design">*/
+ /* T-SHIRT section starts here */
+    // Hide the  “Select Theme”  `option` element in the “Design” menu.  <select id="design" name="user_design">
     $("#design").find('option').first().hide();
 
-    //Update the “Color” field to read “Please select a T-shirt theme”.
-    //<option value="cornflowerblue">Cornflower Blue (JS Puns shirt only)</option>
+    // The “Color” field will be updated and now display “Please select a T-shirt theme”.
+        // <option value="cornflowerblue">Cornflower Blue (JS Puns shirt only)</option>
     $("#color option:first").before('<option selected="selected" value="none">Please select a T-shirt theme</option>');
 
-    //Hide the colors in the “Color” drop down menu.
-    //<select id="color">
-
+    // Hide the colors in the “Color” drop down menu. <select id="color">
     $("#color").find('option:not(:eq(0))').hide();
 
-    //event listener if show hide update color
+    // Event listener if show hide update color
     $('#design').on('change', function(){
-      //T shirt section extra credit
+      // T-shirt section extra credit
         $('#color').show();
         $('#colors-js-puns label').show();
 
@@ -67,7 +61,8 @@ $(document).ready(function () { });
     $('#color').hide();
     $('#colors-js-puns label').hide();
 
-//Creating an element to display the total activity cost
+/* Activity Cost section */
+    //Creating an element to display the total activity cost
     //var activityCostDiv = document.createElement("div");  // Create with DOM https://www.w3schools.com/jquery/jquery_dom_add.asp
     var activityCostDiv = $("<div></div>");
     $(".activities").append(activityCostDiv);      // Append the new element
@@ -90,7 +85,7 @@ $(document).ready(function () { });
                 //do something when checked
                 //activityCostAmt = activityCostAmt + intDollar;
                 activityCostAmt += intDollar;
-                wasChecked = true;
+                //wasChecked = true;
             } else {
                 //do something when unchecked
                 activityCostAmt -= intDollar;
@@ -114,8 +109,6 @@ $(document).ready(function () { });
             }
         }
     });
-
-//});
 
 const getTimestampStr = (chkBox) => {
     const chkBoxStr = chkBox.parent().text();
@@ -240,8 +233,6 @@ else {
   bitcoinSection.show();
 }
 }
-
-
 
 $("#payment option").first().hide();
 
