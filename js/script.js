@@ -100,6 +100,7 @@ $(document).ready(function(){
     $('#colors-js-puns label').hide();
 
 //ACTIVITY Section
+  //
   // Create with DOM https://www.w3schools.com/jquery/jquery_dom_add.asp
 
   //Generate a new div element and append to the element with the activities class
@@ -139,10 +140,9 @@ $(document).ready(function(){
            else {
                //do something when unchecked
                activityCostAmt -= intDollar;
-           }
-
+         }
+         //The running total of the selected checkboxes are or is displayed here.
            $activityCostDiv.text("Total: $" + activityCostAmt);
-
            if ($wasClicked.attr("name") != "all")
            {
                const dayTimeSubstr = getTimestampStr($wasClicked);
@@ -161,8 +161,8 @@ $(document).ready(function(){
        }
   });
 
-  //Form Validation and Validation Messages
-  //
+//Form Validation and Validation Messages
+    //prevent the user from submitting the form if there are any validation errors
   const getTimestampStr = (chkBox) => {
     const chkBoxStr = chkBox.parent().text();
     const emDashLoc = chkBoxStr.indexOf("—");
@@ -171,7 +171,6 @@ $(document).ready(function(){
 
     return dayTimeSubstr;
 }
-
 const DetermineTwentyFourHour = (curHour, hourStr) => {
     if (hourStr == "12am")
     {
@@ -229,312 +228,313 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
     //https://stackoverflow.com/questions/3269434/whats-the-most-efficient-way-to-test-two-integer-ranges-for-overlap
 
     return (leftTimeStartHr <= rightTimeEndHr) && (rightTimeStartHr <= leftTimeEndHr);
-}
+  }
 
-const hideInputValidationError = (errIDName) =>
-{
-    const $targetEle = $(errIDName);
+  const hideInputValidationError = (errIDName) =>
+  {
+      const $targetEle = $(errIDName);
 
-    if ($targetEle.length > 0)
-    {
-        $targetEle.remove();
-    }
-}
+      if ($targetEle.length > 0)
+      {
+          $targetEle.remove();
+      }
+  }
 
-const showInputValidationError = (queryString, errIDName, displayText, paddingBottom) =>
-{
-    const $mesgTarget = $(queryString);
-    const $errMesgEle = $('<div id="' + errIDName + '" style="color: red; font-weight: bold; padding-bottom:' + paddingBottom + 'px;"></div>').text(displayText);
-    $mesgTarget.before($errMesgEle);
-}
+  const showInputValidationError = (queryString, errIDName, displayText, paddingBottom) =>
+  {
+      const $mesgTarget = $(queryString);
+      const $errMesgEle = $('<div id="' + errIDName + '" style="color: red; font-weight: bold; padding-bottom:' + paddingBottom + 'px;"></div>').text(displayText);
+      $mesgTarget.before($errMesgEle);
+  }
 
-/////////////////////////////////////////// Payment Section
+//Payment Section
+    //The selected payment option is selected based on the value (credit card, PayPal, or Bitcoin)
 
-const $paymentSectionHome = $("fieldset").last();
-const $paymentTypeSections = $paymentSectionHome.find("div");
-const $ccSection = $paymentTypeSections.eq(0);
-const $paypalSection = $paymentTypeSections.eq(4);
-const $bitcoinSection = $paymentTypeSections.eq(5);
+  const $paymentSectionHome = $("fieldset").last();
+  const $paymentTypeSections = $paymentSectionHome.find("div");
+  const $ccSection = $paymentTypeSections.eq(0);
+  const $paypalSection = $paymentTypeSections.eq(4);
+  const $bitcoinSection = $paymentTypeSections.eq(5);
 
-$ccSection.hide();
-$paypalSection.hide();
-$bitcoinSection.hide();
-
-const reactToPaymentType = (paymentTypeVal) => {
-  //remove validation error: user has now elected a payment type
-  hideInputValidationError("#err-payment");
-  if (paymentTypeVal == 'credit card') {
-  $ccSection.show();
+  //Hide the sections for the values until selected
+  $ccSection.hide();
   $paypalSection.hide();
   $bitcoinSection.hide();
-  }
-  else if (paymentTypeVal == 'paypal') {
-    $ccSection.hide();
-    $paypalSection.show();
-    $bitcoinSection.hide();
-  }
-  else {
-    $ccSection.hide();
+
+  //Display the credit card inputs, hide others
+  const reactToPaymentType = (paymentTypeVal) => {
+    //remove validation error: user has now elected a payment type
+    hideInputValidationError("#err-payment");
+    if (paymentTypeVal == 'credit card') {
+    $ccSection.show();
     $paypalSection.hide();
-    $bitcoinSection.show();
+    $bitcoinSection.hide();
+    }
+    //Display the paypal text, hide others
+    else if (paymentTypeVal == 'paypal') {
+      $ccSection.hide();
+      $paypalSection.show();
+      $bitcoinSection.hide();
+    }
+    //Display the bitcoin text, hide others
+    else {
+      $ccSection.hide();
+      $paypalSection.hide();
+      $bitcoinSection.show();
+    }
   }
-}
 
-$("#payment option").first().hide();
+  $("#payment option").first().hide();
 
-$("#payment").on("change", (e) =>
-{
-  reactToPaymentType($(e.target).val());
-});
-
-const $paymentSelect = $('#payment option[value="credit card"]');
-$paymentSelect.attr('selected', 'selected');
-reactToPaymentType('credit card');
-
-//////////////////////////////////VALIDATION
-const validationAllPageFormElements = () => {
-  let retVal = true;
-  if (!validationNameInput())
+  $("#payment").on("change", (e) =>
   {
-    retVal = false;
-  }
-  if (!validationEmailInput())
-  {
-    retVal = false;
-  }
-  if (!validationActivitySection())
-  {
-    retVal = false;
-  }
-  if (!validationCreditCardInformation())
-  {
-    retVal = false;
+    reactToPaymentType($(e.target).val());
+  });
+
+  const $paymentSelect = $('#payment option[value="credit card"]');
+  $paymentSelect.attr('selected', 'selected');
+  reactToPaymentType('credit card');
+
+//VALIDATION
+  const validationAllPageFormElements = () => {
+    let retVal = true;
+    if (!validationNameInput())
+    {
+      retVal = false;
+    }
+    if (!validationEmailInput())
+    {
+      retVal = false;
+    }
+    if (!validationActivitySection())
+    {
+      retVal = false;
+    }
+    if (!validationCreditCardInformation())
+    {
+      retVal = false;
+    }
+
+    return retVal;
   }
 
-  return retVal;
-}
-
-const validationNameInput = () => {
-  hideInputValidationError("#errName");
-  if ($('#name').val() != "")
-  {
-    return true;
-  }
-  else
-  {
-    showInputValidationError("#name", "errName", "Name field must not be empty.", 0);
-    return false;
-  }
-}
-
-const validationEmailInput = () => {
-    hideInputValidationError("#errEmail");
-    //https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
-    const re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-    if (re.test($('#mail').val()))
+  const validationNameInput = () => {
+    hideInputValidationError("#errName");
+    if ($('#name').val() != "")
     {
       return true;
     }
     else
     {
-      showInputValidationError("#mail", "errEmail", "Email address is improperly formatted.", 0);
+      showInputValidationError("#name", "errName", "Name field must not be empty.", 0);
       return false;
     }
-}
+  }
 
-const validationActivitySection = () => {
-  hideInputValidationError("#errActivity");
-    let gotOne = false;
-    const $allCheckboxes = $(".activities input");
+  const validationEmailInput = () => {
+      hideInputValidationError("#errEmail");
+      //https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
+      const re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+      if (re.test($('#mail').val()))
+      {
+        return true;
+      }
+      else
+      {
+        showInputValidationError("#mail", "errEmail", "Email address is improperly formatted.", 0);
+        return false;
+      }
+  }
 
-    for (let i = 0; i < $allCheckboxes.length; i+=1)
+  const validationActivitySection = () => {
+    hideInputValidationError("#errActivity");
+      let gotOne = false;
+      const $allCheckboxes = $(".activities input");
+
+      for (let i = 0; i < $allCheckboxes.length; i+=1)
+      {
+          const $curCheckbox = $allCheckboxes.eq(i);
+          if ($curCheckbox.is(':checked'))
+          {
+              gotOne = true;
+          }
+      }
+
+  if (gotOne)
     {
-        const $curCheckbox = $allCheckboxes.eq(i);
-        if ($curCheckbox.is(':checked'))
-        {
-            gotOne = true;
-        }
+      return true;
     }
-
-if (gotOne)
-  {
-    return true;
+    else
+    {
+      showInputValidationError(".activities label:first", "errActivity", "At least one activity must be selected.", 30);
+      return false;
+    }
   }
-  else
-  {
-    showInputValidationError(".activities label:first", "errActivity", "At least one activity must be selected.", 30);
-    return false;
-  }
-}
+  //The credit card validation errors
+  const validationCreditCardInformation = () => {
+    hideInputValidationError("#err-cc-num");
+    hideInputValidationError("#err-zip");
+    hideInputValidationError("#err-cvv");
+    hideInputValidationError("#err-payment");
 
-const validationCreditCardInformation = () => {
-  hideInputValidationError("#err-cc-num");
-  hideInputValidationError("#err-zip");
-  hideInputValidationError("#err-cvv");
-  hideInputValidationError("#err-payment");
+    const paymentTypeVal = $("#payment").val();
+    if (paymentTypeVal == "select_method")
+    {
+      showInputValidationError("button", "err-payment", "Payment choice must be made.", 0);
+    }
+    else if (paymentTypeVal == 'credit card')
+    {
+        let retVal = true;
+        if (!validationCreditCardNumber())
+        {
+          retVal = false;
+        }
+        if (!validationCreditCardZipCode())
+        {
+          retVal = false;
+        }
+        if (!validationCreditCardCVV())
+        {
+          retVal = false;
+        }
 
-  const paymentTypeVal = $("#payment").val();
-  if (paymentTypeVal == "select_method")
-  {
-    showInputValidationError("button", "err-payment", "Payment choice must be made.", 0);
-  }
-  else if (paymentTypeVal == 'credit card')
-  {
-      let retVal = true;
-      if (!validationCreditCardNumber())
-      {
-        retVal = false;
-      }
-      if (!validationCreditCardZipCode())
-      {
-        retVal = false;
-      }
-      if (!validationCreditCardCVV())
-      {
-        retVal = false;
-      }
+        return retVal;
 
-      return retVal;
-
-  }
-  else
-  {
-    return true;
-  }
-}
-
-const validationCreditCardNumber = () => {
-  const validSizeMin = 13;
-  const validSizeMax = 16;
-
-  const ccNumberVal = $('#cc-num').val();
-  const ccNumberValSize = ccNumberVal.length;
-
-  const digitRegEx = /^(\d)+$/;
-
-  if (ccNumberValSize >= validSizeMin && ccNumberValSize <= validSizeMax && digitRegEx.test(ccNumberVal))
-  {
-    return true;
-  }
-  else if (ccNumberValSize == 0) //empty text box
-  {
-    showInputValidationError("#cc-num", "err-cc-num", "Credit card number cannot be empty.", 0);
-    return false;
-  }
-  else if (!digitRegEx.test(ccNumberVal)) //nondigit characters
-  {
-    showInputValidationError("#cc-num", "err-cc-num", "Credit card number must be only digits.", 0);
-    return false;
-  }
-  else //wrong size
-  {
-    showInputValidationError("#cc-num", "err-cc-num", "Credit card number must be between 13 and 16 digits.", 0);
-    return false;
-  }
-}
-
-const validationCreditCardZipCode = () => {
-  const validSize = 5;
-
-  const ccZipVal = $('#zip').val();
-  const ccZipValSize = ccZipVal.length;
-
-  const digitRegEx = /^(\d)+$/;
-
-  if (ccZipValSize == validSize && digitRegEx.test(ccZipVal))
-  {
-    return true;
-  }
-  else if (ccZipValSize == 0) //empty
-  {
-    showInputValidationError("#zip", "err-zip", "Credit card ZIP code cannot be empty.", 0);
-    return false;
-  }
-  else if (!digitRegEx.test(ccZipVal)) //non-digit characters
-  {
-    showInputValidationError("#zip", "err-zip", "Credit card ZIP code must be only digits.", 0);
-    return false;
-  }
-  else  //wrong length
-  {
-    showInputValidationError("#zip", "err-zip", "Credit card ZIP code must be exactly 5 digits.", 0);
-    return false;
-  }
-}
-
-const validationCreditCardCVV = () => {
-  const validSize = 3;
-
-  const ccCVVVal = $('#cvv').val();
-  const ccCVVValSize = ccCVVVal.length;
-
-  const digitRegEx = /^(\d)+$/;
-
-  if (ccCVVValSize == validSize && digitRegEx.test(ccCVVVal))
-  {
-    return true;
-  }
-  else if (ccCVVValSize == 0) //empty
-  {
-    showInputValidationError("#cvv", "err-cvv", "Credit card CVV code cannot be empty.", 0);
-    return false;
-  }
-  else if (!digitRegEx.test(ccCVVVal)) //non-digit entries
-  {
-    showInputValidationError("#cvv", "err-cvv", "Credit card CVV code must be only digits.", 0);
-    return false;
-  }
-  else  //wrong length
-  {
-    showInputValidationError("#cvv", "err-cvv", "Credit card CVV code must be exactly 3 digits.", 0);
-    return false;
+    }
+    else
+    {
+      return true;
+    }
   }
 
-}
+  const validationCreditCardNumber = () => {
+    const validSizeMin = 13;
+    const validSizeMax = 16;
 
-$("form").submit((e) => {
-e.preventDefault();
+    const ccNumberVal = $('#cc-num').val();
+    const ccNumberValSize = ccNumberVal.length;
 
-if (validationAllPageFormElements())
-{
-  //validators succeeded; proceeding with the POST
-  //This would normally be called here
-  //$("form")[0].submit();
+    //Use the regex  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+    const digitRegEx = /^(\d)+$/;
 
-  //instead we will refresh the page
-  location.reload();
-}
+    if (ccNumberValSize >= validSizeMin && ccNumberValSize <= validSizeMax && digitRegEx.test(ccNumberVal))
+    {
+      return true;
+    }
+    else if (ccNumberValSize == 0) //empty text box
+    {
+      showInputValidationError("#cc-num", "err-cc-num", "Credit card number cannot be empty.", 0);
+      return false;
+    }
+    else if (!digitRegEx.test(ccNumberVal)) //nondigit characters
+    {
+      //error message for credit card if letters are typed
+      showInputValidationError("#cc-num", "err-cc-num", "Credit card number must be only digits.", 0);
+      return false;
+    }
+    else //wrong size
+    {
+      //error message for credit card if 13-16 digits are not typed
+      showInputValidationError("#cc-num", "err-cc-num", "Credit card number must be between 13 and 16 digits.", 0);
+      return false;
+    }
+  }
+  //zip code must be 5 digits
+  const validationCreditCardZipCode = () => {
+    const validSize = 5;
 
-});
+    const ccZipVal = $('#zip').val();
+    const ccZipValSize = ccZipVal.length;
 
-$("#name").on("keyup", () => {
-  validationNameInput();
-});
+    const digitRegEx = /^(\d)+$/;
 
-$("#mail").on("keyup", () => {
-  validationEmailInput();
-});
+    if (ccZipValSize == validSize && digitRegEx.test(ccZipVal))
+    {
+      return true;
+    }
+    else if (ccZipValSize == 0) //empty
+    {
+      showInputValidationError("#zip", "err-zip", "Credit card ZIP code cannot be empty.", 0);
+      return false;
+    }
+    else if (!digitRegEx.test(ccZipVal)) //non-digit characters
+    {
+      showInputValidationError("#zip", "err-zip", "Credit card ZIP code must be only digits.", 0);
+      return false;
+    }
+    else  //wrong length
+    {
+      showInputValidationError("#zip", "err-zip", "Credit card ZIP code must be exactly 5 digits.", 0);
+      return false;
+    }
+  }
 
-$("#cc-num").on("keyup", () => {
-  hideInputValidationError("#err-cc-num");
-  validationCreditCardNumber();
-});
+  const validationCreditCardCVV = () => {
+    const validSize = 3;
 
-$("#zip").on("keyup", () => {
-  hideInputValidationError("#err-zip");
-  validationCreditCardZipCode();
-});
+    const ccCVVVal = $('#cvv').val();
+    const ccCVVValSize = ccCVVVal.length;
 
-$("#cvv").on("keyup", () => {
-  hideInputValidationError("#err-cvv");
-  validationCreditCardCVV();
-});
+    const digitRegEx = /^(\d)+$/;
 
+    if (ccCVVValSize == validSize && digitRegEx.test(ccCVVVal))
+    {
+      return true;
+    }
+    else if (ccCVVValSize == 0) //empty
+    {
+      showInputValidationError("#cvv", "err-cvv", "Credit card CVV code cannot be empty.", 0);
+      return false;
+    }
+    else if (!digitRegEx.test(ccCVVVal)) //non-digit entries
+    {
+      showInputValidationError("#cvv", "err-cvv", "Credit card CVV code must be only digits.", 0);
+      return false;
+    }
+    else  //wrong length
+    {
+      showInputValidationError("#cvv", "err-cvv", "Credit card CVV code must be exactly 3 digits.", 0);
+      return false;
+    }
+  }
+  //Use preventDefault when the form isn't properly filled out and let it submit/refresh when it is filled out properly
+  $("form").submit((e) => {
+  e.preventDefault();
 
+  if (validationAllPageFormElements())
+  {
+    //validators succeeded; proceeding with the POST
+    //This would normally be called here
+    //$("form")[0].submit();
 
+    //instead we will refresh the page
+    location.reload();
+  }
 
-  //THE END
+  });
 
+  $("#name").on("keyup", () => {
+    validationNameInput();
+  });
 
+  $("#mail").on("keyup", () => {
+    validationEmailInput();
+  });
 
+  $("#cc-num").on("keyup", () => {
+    hideInputValidationError("#err-cc-num");
+    validationCreditCardNumber();
+  });
+
+  $("#zip").on("keyup", () => {
+    hideInputValidationError("#err-zip");
+    validationCreditCardZipCode();
+  });
+
+  $("#cvv").on("keyup", () => {
+    hideInputValidationError("#err-cvv");
+    validationCreditCardCVV();
+  });
+
+//THE END
 });
