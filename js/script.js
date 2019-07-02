@@ -120,7 +120,7 @@ $(document).ready(function(){
            const checkboxLblText = $wasClicked.parent().text();
            //brings back the position of the dollar sign in the label string
            const indexOfDollarSign = checkboxLblText.indexOf("$");
-           //bring back the substring after the $ sign
+           //bring back the substring after the $ sign (https://www.w3schools.com/jsref/jsref_slice_string.asp)
            const dollarStr = checkboxLblText.slice(indexOfDollarSign + 1);
            //parse the string as an integer
            const intDollar = parseInt(dollarStr);
