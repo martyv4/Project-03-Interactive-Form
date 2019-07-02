@@ -141,7 +141,7 @@ $(document).ready(function(){
                //do something when unchecked
                activityCostAmt -= intDollar;
          }
-         //The running total of the selected checkboxes are or is displayed here.
+         //The running total of the selected checkboxes is displayed here.
            $activityCostDiv.text("Total: $" + activityCostAmt);
            if ($wasClicked.attr("name") != "all")
            {
