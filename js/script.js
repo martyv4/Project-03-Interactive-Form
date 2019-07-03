@@ -99,8 +99,18 @@ $(document).ready(function(){
     $('#color').hide();
     $('#colors-js-puns label').hide();
 
+    //used to reset any input validator messages set later
+    const hideInputValidationError = (errIDName) =>
+    {
+        const $targetEle = $(errIDName);
+
+        if ($targetEle.length > 0)
+        {
+            $targetEle.remove();
+        }
+    }
+
 //ACTIVITY Section
-  //
   // Create with DOM https://www.w3schools.com/jquery/jquery_dom_add.asp
 
   //Generate a new div element and append to the element with the activities class
@@ -111,12 +121,12 @@ $(document).ready(function(){
   //Create event listener for the click action on the element with the activities class
   $(".activities").click((e) => {
       //if the clicked element was a checkbox proceed otherwise ignore the click (no else)
-    //Updating and displaying the total activity cost part 1
+      //Updating and displaying the total activity cost part 1
       const $wasClicked = $(e.target);
        if ($wasClicked.attr("type") == "checkbox")
        {
            //bring back the parent's text (the label of the checkbox)
-           //<label><input type="checkbox" name="all"> Main Conference — $200</label>
+              //<label><input type="checkbox" name="all"> Main Conference — $200</label>
            const checkboxLblText = $wasClicked.parent().text();
            //brings back the position of the dollar sign in the label string
            const indexOfDollarSign = checkboxLblText.indexOf("$");
@@ -129,31 +139,37 @@ $(document).ready(function(){
            let wasChecked = false;
            //
            if ($wasClicked.is(':checked')) {
-               //remove validation message if something was now checked
+               //remove activity validation message if something was now checked
                hideInputValidationError("#errActivity");
 
-               //do something when checked
+               //do something when checked making it true (adding) (https://www.w3schools.com/js/js_operators.asp)
                //activityCostAmt = activityCostAmt + intDollar;
                activityCostAmt += intDollar;
                wasChecked = true;
            }
            else {
-               //do something when unchecked
+               //do something when unchecked, making it false, subtracting same as (x = x - y)
                activityCostAmt -= intDollar;
          }
          //The running total of the selected checkboxes is displayed here.
            $activityCostDiv.text("Total: $" + activityCostAmt);
+
+           //Disabling conflicting activities part 1
+            //checking for conflicts for any checkboxes besides the first (name = all) because it does not include a time range
            if ($wasClicked.attr("name") != "all")
            {
                const dayTimeSubstr = getTimestampStr($wasClicked);
                const $allCheckboxes = $(".activities input");
 
-    //Disabling conflicting activities part 1
+               //get each checkbox using for loop (i = 0-6 for 7 items), assigned to $curCheckbox
                for (let i = 0; i < $allCheckboxes.length; i+=1)
                {
                    const $curCheckbox = $allCheckboxes.eq(i);
-                   if ($curCheckbox.attr("name") != "all" && $curCheckbox.attr("name") != $wasClicked.attr("name") && isTimestampConflicting(dayTimeSubstr, getTimestampStr($curCheckbox)))
+
+                   if (($curCheckbox.attr("name") != "all") && ($curCheckbox.attr("name") != $wasClicked.attr("name")) && (isTimestampConflicting(dayTimeSubstr, getTimestampStr($curCheckbox))))
                    {
+                      //current checkbox conflicts with the checkbox that was clicked
+                      //enable if the $wasClicked was just checked, disable if just unchecked
                        $curCheckbox.attr("disabled", wasChecked);
                    }
                }
@@ -161,17 +177,22 @@ $(document).ready(function(){
        }
   });
 
-//Form Validation and Validation Messages
-    //prevent the user from submitting the form if there are any validation errors
-  const getTimestampStr = (chkBox) => {
-    const chkBoxStr = chkBox.parent().text();
+  //getTimestampStr - extract the timestamp segment from a checkbox's label
+  //emDash location plus two begins the timestamp. Go up to the position of the comma.
+  //— Tuesday 1pm-4pm,
+
+  const getTimestampStr = ($chkBox) => {
+    const chkBoxStr = $chkBox.parent().text();
     const emDashLoc = chkBoxStr.indexOf("—");
     const commaLoc = chkBoxStr.indexOf(",");
     const dayTimeSubstr = chkBoxStr.slice(emDashLoc + 2, commaLoc);
 
     return dayTimeSubstr;
 }
-const DetermineTwentyFourHour = (curHour, hourStr) => {
+
+  //DetermineTwentyFourHour - take the curHour (int) and hourStr (complete time)
+  //and determine its integer 24-hour representation
+  const DetermineTwentyFourHour = (curHour, hourStr) => {
     if (hourStr == "12am")
     {
         return 0;
@@ -190,7 +211,14 @@ const DetermineTwentyFourHour = (curHour, hourStr) => {
     }
 }
 
-const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
+  //isTimestampConflicting - determine whether the timestamps represented by
+    //two separate strings (leftTimestamp, rightTimestamp) intersect at all
+    //return true if so, false if not
+
+  const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
+  //timestamps are in the format {Day} {startTime}-{endTime}
+  //isolate the day from each and compare; if they're different then
+  //the two timestamps cannot conflict
     const leftSpaceLoc = leftTimestamp.indexOf(" ");
     const rightSpaceLoc = rightTimestamp.indexOf(" ");
 
@@ -202,59 +230,58 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
         return false;
     }
 
+  //if the days are the same, compare the time ranges from each
+  //isolate the numeric hours and the am vs pm strings
+  //calculate the 24 hour representation of each of the four times
+  //(left: start hour - end hour, right: start hour - end hour)
+
+  //take everything one character to the right of the space up to the end of the string
     const leftTime = leftTimestamp.slice(leftSpaceLoc+1);
     const rightTime = rightTimestamp.slice(rightSpaceLoc+1);
 
     const leftDivide = leftTime.indexOf("-");
     const rightDivide = rightTime.indexOf("-");
 
+    //we start at the beginning of the string up to the dash
     const leftStartTime = leftTime.slice(0, leftDivide);
     const rightStartTime = rightTime.slice(0, rightDivide);
 
+    //take everything one character to the right of the dash up to the end of the string
     const leftEndTime = leftTime.slice(leftDivide+1);
     const rightEndTime = rightTime.slice(rightDivide+1);
 
-    let leftTimeStartHr = parseInt(leftStartTime.slice(0, leftStartTime.length-1));
-    let rightTimeStartHr = parseInt(rightStartTime.slice(0, rightStartTime.length-1));
+    //we are removing the am/pm and parsing the hour number as an integer
+    //in JS parseInt takes in all numbers found until a non-number is found
+    //ex: parseInt("9pm") = 9
+    let leftTimeStartHr = parseInt(leftStartTime);
+    let rightTimeStartHr = parseInt(rightStartTime);
 
-    let leftTimeEndHr = parseInt(leftEndTime.slice(0, leftEndTime.length-1));
-    let rightTimeEndHr = parseInt(rightEndTime.slice(0, rightEndTime.length-1));
+    let leftTimeEndHr = parseInt(leftEndTime);
+    let rightTimeEndHr = parseInt(rightEndTime);
 
+    //convert to 24 hour time clock
     leftTimeStartHr = DetermineTwentyFourHour(leftTimeStartHr, leftStartTime);
     leftTimeEndHr = DetermineTwentyFourHour(leftTimeEndHr, leftEndTime);
     rightTimeStartHr = DetermineTwentyFourHour(rightTimeStartHr, rightStartTime);
     rightTimeEndHr = DetermineTwentyFourHour(rightTimeEndHr, rightEndTime);
 
-    //test
+    //test if any of the time ranges have intersections. return result (true if yes, false if no)
       //https://stackoverflow.com/questions/3269434/whats-the-most-efficient-way-to-test-two-integer-ranges-for-overlap
 
+      //example (9am <= 4pm) && (1pm <= 12pm) = (true) && (false) = no conflict (false)
     return (leftTimeStartHr <= rightTimeEndHr) && (rightTimeStartHr <= leftTimeEndHr);
-  }
-
-  const hideInputValidationError = (errIDName) =>
-  {
-      const $targetEle = $(errIDName);
-
-      if ($targetEle.length > 0)
-      {
-          $targetEle.remove();
-      }
-  }
-
-  const showInputValidationError = (queryString, errIDName, displayText, paddingBottom) =>
-  {
-      const $mesgTarget = $(queryString);
-      const $errMesgEle = $('<div id="' + errIDName + '" style="color: red; font-weight: bold; padding-bottom:' + paddingBottom + 'px;"></div>').text(displayText);
-      $mesgTarget.before($errMesgEle);
-  }
+}
 
 //Payment Section
-    //The selected payment option is selected based on the value (credit card, PayPal, or Bitcoin)
-
+  //The selected payment option is selected based on the value (credit card, PayPal, or Bitcoin)
+  //There are 6 total divs in the payment section (the last fieldset of the document)
   const $paymentSectionHome = $("fieldset").last();
   const $paymentTypeSections = $paymentSectionHome.find("div");
+  //the first div eq(0) is the credit card section
   const $ccSection = $paymentTypeSections.eq(0);
+  //the fifth div eq(4) is the paypal section
   const $paypalSection = $paymentTypeSections.eq(4);
+  //the sixth div eq(5) is the bitcoin section
   const $bitcoinSection = $paymentTypeSections.eq(5);
 
   //Hide the sections for the values until selected
@@ -262,14 +289,15 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
   $paypalSection.hide();
   $bitcoinSection.hide();
 
-  //Display the credit card inputs, hide others
+  //Change the display depending upon the users choice of payment type
   const reactToPaymentType = (paymentTypeVal) => {
     //remove validation error: user has now selected a payment type
     hideInputValidationError("#err-payment");
     if (paymentTypeVal == 'credit card') {
-    $ccSection.show();
-    $paypalSection.hide();
-    $bitcoinSection.hide();
+   //Display the credit card inputs, hide others
+      $ccSection.show();
+      $paypalSection.hide();
+      $bitcoinSection.hide();
     }
     //Display the paypal text, hide others
     else if (paymentTypeVal == 'paypal') {
@@ -284,20 +312,42 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
       $bitcoinSection.show();
     }
   }
-
+  //We are hiding the Select Payment Method option:  <option value="select_method">Select Payment Method</option>
   $("#payment option").first().hide();
 
+  //event listener to call reactToPayment type on the selected option's value attribute
   $("#payment").on("change", (e) =>
   {
     reactToPaymentType($(e.target).val());
   });
 
+  //These 3 lines are being called on page load: set the payment type to credit card
+  //#payment id which is the select drop down, then get every option where the value is equal to credit card
   const $paymentSelect = $('#payment option[value="credit card"]');
+  //setting the selected attribute to selected will highlight it
   $paymentSelect.attr('selected', 'selected');
+  //selecting the 'credit card' choice in the dropdown doesn't cause the event listener to trigger
+  //have to force the page to react by calling reactToPaymentType
   reactToPaymentType('credit card');
+
+//Form Validation and Validation Messages
+    //prevent the user from submitting the form if there are any validation errors
+
+    //showInputValidationError - display an input validation error message in the specified
+    //querystring element - display message ID in DOM is errIDName, displayed message is
+    //display text, and take in a parameter to add any padding-bottom to adjust for spacing
+    const showInputValidationError = (queryString, errIDName, displayText, paddingBottom) =>
+    {
+        const $mesgTarget = $(queryString);
+        const $errMesgEle = $('<div id="' + errIDName + '" style="color: red; font-weight: bold; padding-bottom:' + paddingBottom + 'px;"></div>').text(displayText);
+        $mesgTarget.before($errMesgEle);
+    }
 
 //VALIDATION
   //Error messages for validation errors
+  //This is the master function to check all input validation
+  //We want each of these validation functions to happen and if any returns false we return false
+
   const validationAllPageFormElements = () => {
     let retVal = true;
     if (!validationNameInput())
@@ -320,6 +370,7 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
     return retVal;
   }
 
+  //If the name text field value is empty then show a message
   const validationNameInput = () => {
     hideInputValidationError("#errName");
     if ($('#name').val() != "")
@@ -349,7 +400,9 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
       }
   }
 //Form Validation
-  //At least one checkbox in the section Register for Activities must be selected else an error will appear on the form.
+  //At least one checkbox in the section Register for Activities must be selected
+  //else an error will appear on the activities section.
+
   const validationActivitySection = () => {
     hideInputValidationError("#errActivity");
       let gotOne = false;
@@ -374,18 +427,22 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
       return false;
     }
   }
-//Hide all credit card validation errors
+
   const validationCreditCardInformation = () => {
+    //Hide all credit card validation errors
     hideInputValidationError("#err-cc-num");
     hideInputValidationError("#err-zip");
     hideInputValidationError("#err-cvv");
     hideInputValidationError("#err-payment");
 
     const paymentTypeVal = $("#payment").val();
+
+    //if no payment option is selected, generate a message forcing the user to choose
     if (paymentTypeVal == "select_method")
     {
       showInputValidationError("button", "err-payment", "Payment choice must be made.", 0);
     }
+    //if its credit card, validate the three input textboxes
     else if (paymentTypeVal == 'credit card')
     {
         let retVal = true;
@@ -405,13 +462,15 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
         return retVal;
 
     }
+    //paypal and bitcoin need no validation; just return true
     else
     {
       return true;
     }
   }
   //Form validation for Credit Card error message
-    //Regex (https://www.computerhope.com/unix/regex-quickref.htm) (Positional metacharacters (^ = start of string or line, $ = end of string, or end of line
+    //Regex (https://www.computerhope.com/unix/regex-quickref.htm)
+    //(Positional metacharacters (^ = start of string or line, $ = end of string, or end of line
     //Use the regex to define the text https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
 
   const validationCreditCardNumber = () => {
@@ -423,22 +482,23 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
 
     const digitRegEx = /^(\d)+$/;
 
+    //if the length is correct and the regex test is true, return true
     if (ccNumberValSize >= validSizeMin && ccNumberValSize <= validSizeMax && digitRegEx.test(ccNumberVal))
     {
       return true;
     }
-    else if (ccNumberValSize == 0) //empty text box
+    else if (ccNumberValSize == 0) //empty text box; error
     {
       showInputValidationError("#cc-num", "err-cc-num", "Credit card number cannot be empty.", 0);
       return false;
     }
-    else if (!digitRegEx.test(ccNumberVal)) //nondigit characters
+    else if (!digitRegEx.test(ccNumberVal)) //nondigit characters; error
     {
       //error message for credit card if letters are typed
       showInputValidationError("#cc-num", "err-cc-num", "Credit card number must be only digits.", 0);
       return false;
     }
-    else //wrong size
+    else //wrong size; error
     {
       //error message for credit card if 13-16 digits are not typed
       showInputValidationError("#cc-num", "err-cc-num", "Credit card number must be between 13 and 16 digits.", 0);
@@ -456,21 +516,22 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
 
     const digitRegEx = /^(\d)+$/;
 
+    //if size is correct and the regex passes, return true
     if (ccZipValSize == validSize && digitRegEx.test(ccZipVal))
     {
       return true;
     }
-    else if (ccZipValSize == 0) //empty
+    else if (ccZipValSize == 0) //empty textfield; error
     {
       showInputValidationError("#zip", "err-zip", "Credit card ZIP code cannot be empty.", 0);
       return false;
     }
-    else if (!digitRegEx.test(ccZipVal)) //non-digit characters
+    else if (!digitRegEx.test(ccZipVal)) //non-digit characters; error
     {
       showInputValidationError("#zip", "err-zip", "Credit card ZIP code must be only digits.", 0);
       return false;
     }
-    else  //wrong length
+    else  //wrong length; error
     {
       showInputValidationError("#zip", "err-zip", "Credit card ZIP code must be exactly 5 digits.", 0);
       return false;
@@ -485,26 +546,28 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
 
     const digitRegEx = /^(\d)+$/;
 
+    //if size is correct and regex test passes, return true
     if (ccCVVValSize == validSize && digitRegEx.test(ccCVVVal))
     {
       return true;
     }
-    else if (ccCVVValSize == 0) //empty
+    else if (ccCVVValSize == 0) //empty textfield; error
     {
       showInputValidationError("#cvv", "err-cvv", "Credit card CVV code cannot be empty.", 0);
       return false;
     }
-    else if (!digitRegEx.test(ccCVVVal)) //non-digit entries
+    else if (!digitRegEx.test(ccCVVVal)) //non-digit entries; error
     {
       showInputValidationError("#cvv", "err-cvv", "Credit card CVV code must be only digits.", 0);
       return false;
     }
-    else  //wrong length
+    else  //wrong length; error
     {
       showInputValidationError("#cvv", "err-cvv", "Credit card CVV code must be exactly 3 digits.", 0);
       return false;
     }
   }
+
   //Use preventDefault when the form isn't properly filled out and let it submit/refresh when it is filled out properly
   $("form").submit((e) => {
   e.preventDefault();
@@ -521,24 +584,29 @@ const isTimestampConflicting = (leftTimestamp, rightTimestamp) => {
 
   });
 
+  //when a key is pressed in the name input text field, call the name validator
   $("#name").on("keyup", () => {
     validationNameInput();
   });
 
+  //when a key is pressed in the email input text field, call the email validator
   $("#mail").on("keyup", () => {
     validationEmailInput();
   });
 
+  //when a key is pressed in the cc num input text field, call the cc num validator
   $("#cc-num").on("keyup", () => {
     hideInputValidationError("#err-cc-num");
     validationCreditCardNumber();
   });
 
+  //when a key is pressed in the ZIP input text field, call the ZIP validator
   $("#zip").on("keyup", () => {
     hideInputValidationError("#err-zip");
     validationCreditCardZipCode();
   });
 
+  //when a key is pressed in the CVV input text field, call the CVV validator
   $("#cvv").on("keyup", () => {
     hideInputValidationError("#err-cvv");
     validationCreditCardCVV();
