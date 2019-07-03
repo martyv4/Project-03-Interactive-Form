@@ -599,7 +599,7 @@ $(document).ready(function(){
     hideInputValidationError("#err-cc-num");
     validationCreditCardNumber();
   });
-
+ 
   //when a key is pressed in the ZIP input text field, call the ZIP validator
   $("#zip").on("keyup", () => {
     hideInputValidationError("#err-zip");
